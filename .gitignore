@@ -1,0 +1,14 @@
+Debug
+Release
+__pycache__
+*.vcxproj
+*.sln
+obj
+.vs
+Makefile
+*.make
+*.user
+*.pyc
+*.log
+*.filters
+shell_history.txt
