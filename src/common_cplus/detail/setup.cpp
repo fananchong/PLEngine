@@ -29,7 +29,12 @@ int setup(
     }
 
     const std::string &application_name = ProgramOptions::get_string("name");
-    Logger::instance().init(application_name);
+
+    if (Logger::instance().init(application_name) == false)
+    {
+        return 0;
+    }
+
     g_pmain = std::make_shared<RunContainerMain>();
 
     if (on_app_open)
@@ -83,7 +88,7 @@ int setup(
 }
 
 #ifdef ENABLE_PLENGINE_PYTHON
-void setup_pythonvm(bool open_shell)
+void setup_pythonvm(bool open_shell, const std::function<void()> &before_app_open)
 {
     PythonVM::open(
         ProgramOptions::get_string("py_home_path"),
@@ -92,8 +97,13 @@ void setup_pythonvm(bool open_shell)
         g_argv
     );
 
-    PythonVM::get_impl()->post([]()
+    PythonVM::get_impl()->post([before_app_open]()
     {
+        if (before_app_open)
+        {
+            before_app_open();
+        }
+
         bool success = PythonVM::load_module(entrypoint);
         assert(success);
 

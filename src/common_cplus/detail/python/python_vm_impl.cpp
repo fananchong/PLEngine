@@ -4,6 +4,7 @@
 #include "python_vm_impl.h"
 #include "python_vm.h"
 #include "python_vm_install_py_dlls.h"
+#include "python_vm_print_error.h"
 #include "log.h"
 #include "strutil.h"
 #include "program_options.h"
@@ -158,15 +159,13 @@ bool PythonVMImpl::load_module(const std::string &module)
             }
             else
             {
-                PyErr_Print();
-                PyErr_Clear();
+                pythonvm_print_error();
             }
         }
     }
     catch (...)
     {
-        PyErr_Print();
-        PyErr_Clear();
+        pythonvm_print_error();
     }
 
     ERR("failed to load py module, module = {}", module);
@@ -181,8 +180,7 @@ void PythonVMImpl::exec(const std::string &s)
     }
     catch (...)
     {
-        PyErr_Print();
-        PyErr_Clear();
+        pythonvm_print_error();
     }
 }
 
@@ -198,8 +196,7 @@ void PythonVMImpl::call(const std::string &module, const std::string &func)
         }
         catch (...)
         {
-            PyErr_Print();
-            PyErr_Clear();
+            pythonvm_print_error();
         }
     }
     else

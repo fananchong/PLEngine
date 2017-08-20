@@ -18,4 +18,7 @@ RUN mkdir -p /python_out && cd /Python-3.6.2 && ./configure --prefix=/python_out
 RUN sed -i 's/using python : 2.7 : \/usr ;/using python : 3.6 : \/python_out : \/python_out\/include\/python3.6m : \/python_out\/lib ;/g' /boost_1_64_0/project-config.jam
 
 RUN cd boost_1_64_0 && ./b2 stage variant=release threading=multi link=static runtime-link=static address-model=64 --with-python
+
+RUN cd boost_1_64_0 && ./b2 stage variant=release threading=multi link=static runtime-link=static address-model=64 --with-regex
+
 ADD setup.sh /setup.sh

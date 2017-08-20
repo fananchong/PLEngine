@@ -5,6 +5,11 @@
 
 namespace logwrap
 {
+    inline void trace(const std::string &msg)
+    {
+        TRACE(msg);
+    }
+
     inline void info(const std::string &msg)
     {
         INFO(msg);
@@ -15,24 +20,19 @@ namespace logwrap
         DEBUG(msg);
     }
 
-    inline void warn(const std::string &msg)
+    inline void warning(const std::string &msg)
     {
         WARN(msg);
     }
 
-    inline void err(const std::string &msg)
+    inline void error(const std::string &msg)
     {
         ERR(msg);
     }
 
-    inline void set_level(E_LOGGER_LEVEL level)
+    inline void fatal(const std::string &msg)
     {
-        Logger::instance().set_level(level);
-    }
-
-    inline E_LOGGER_LEVEL get_level()
-    {
-        return Logger::instance().get_level();
+        FATAL(msg);
     }
 };
 

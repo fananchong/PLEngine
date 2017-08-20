@@ -78,11 +78,12 @@ workspace "plengine"
         links {
             "boost_program_options",
             "boost_python3",
-            "boost_log",
             "boost_log_setup",
+            "boost_log",
             "boost_serialization",
             "boost_thread",
             "boost_filesystem",
+            "boost_regex",
             "boost_system",
             "fmt",
             "python3.6m",

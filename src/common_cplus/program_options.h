@@ -9,6 +9,8 @@
 { "help,h",             "",                     "list all options",                 false },    \
 { "name",               "uname_app",            "this app's name",                  true },     \
 { "log_path",           "logs",                 "log path",                         true },     \
+{ "log_ini_file",       "../log.ini",           "logger ini file",                  true },     \
+{ "log_with_color",     "",                     "enable log with color",            false },    \
 { "py_home_path",       "../res/py",            "the path of python home dir",      true },     \
 { "py_script_path",     "",                     "the path of python script file",   true },     \
 { "py_shell",           "",                     "open python shell",                false },    \

@@ -20,7 +20,7 @@ int setup(
     const std::vector<ProgramOptions::option_t> &options = std::vector<ProgramOptions::option_t>());
 
 #ifdef ENABLE_PLENGINE_PYTHON
-void setup_pythonvm(bool open_shell);
+void setup_pythonvm(bool open_shell, const std::function<void()> &before_app_open = std::function<void()>());
 #endif
 
 #endif

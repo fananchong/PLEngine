@@ -142,6 +142,7 @@
 #define isatty _isatty
 #define write win32_write
 #define read _read
+#include <corecrt_io.h>
 #endif
 #include <stdlib.h>
 #include <stdio.h>
@@ -155,6 +156,7 @@
 #include <functional>
 #include <vector>
 #include <iostream>
+#include <thread>
 
 namespace linenoise {
 
@@ -2296,6 +2298,7 @@ inline bool linenoiseRaw(const char *prompt, std::string& line) {
         }
 
         disableRawMode(STDIN_FILENO);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         printf("\n");
     }
     return quit;
@@ -2308,6 +2311,8 @@ inline bool linenoiseRaw(const char *prompt, std::string& line) {
  * something even in the most desperate of the conditions. */
 inline bool Readline(const char *prompt, std::string& line) {
     if (isUnsupportedTerm()) {
+        fflush(stdout);
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
         printf("%s",prompt);
         fflush(stdout);
         std::getline(std::cin, line);

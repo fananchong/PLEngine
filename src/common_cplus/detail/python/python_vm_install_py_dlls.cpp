@@ -156,7 +156,7 @@ EXTERN_PYTHON_FUNC1(_ssl);
 #ifdef ENABLE_PLENGINE_PYTHON_TKINTER
 EXTERN_PYTHON_FUNC1(_tkinter);
 #endif
-EXTERN_PYTHON_FUNC1(pl);
+//EXTERN_PYTHON_FUNC1(pl);
 
 
 static pyfunc g_funs[] =
@@ -190,7 +190,7 @@ static pyfunc g_funs[] =
 #ifdef ENABLE_PLENGINE_PYTHON_TKINTER
     EXTERN_PYTHON_FUNC2(_tkinter),
 #endif
-    EXTERN_PYTHON_FUNC2(pl),
+    //EXTERN_PYTHON_FUNC2(pl),
     NULL
 };
 
@@ -225,7 +225,7 @@ static const char* g_sfuns[] =
 #ifdef ENABLE_PLENGINE_PYTHON_TKINTER
     EXTERN_PYTHON_FUNC3(_tkinter),
 #endif
-    EXTERN_PYTHON_FUNC3(pl),
+    //EXTERN_PYTHON_FUNC3(pl),
     ""
 };
 
@@ -260,29 +260,29 @@ static PyObject* g_importedModules[] =
 #ifdef ENABLE_PLENGINE_PYTHON_TKINTER
     NULL,   // _tkinter
 #endif
-    NULL,   // pl
+    //NULL,   // pl
     NULL
 };
 
 #else
 
-EXTERN_PYTHON_FUNC1(pl);
+//EXTERN_PYTHON_FUNC1(pl);
 
 static pyfunc g_funs[] =
 {
-    EXTERN_PYTHON_FUNC2(pl),
+    //EXTERN_PYTHON_FUNC2(pl),
     NULL
 };
 
 static const char* g_sfuns[] =
 {
-    EXTERN_PYTHON_FUNC3(pl),
+    //EXTERN_PYTHON_FUNC3(pl),
     ""
 };
 
 static PyObject* g_importedModules[] =
 {
-    NULL,   // pl
+    //NULL,   // pl
     NULL
 };
 
