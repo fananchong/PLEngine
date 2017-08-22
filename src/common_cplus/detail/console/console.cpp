@@ -5,7 +5,7 @@
 #include "console.h"
 #include "log.h"
 #include "program_options.h"
-#include "linenoise.hpp"
+#include "readline.h"
 #include <boost/algorithm/string.hpp>
 
 Console::Console()
@@ -20,22 +20,17 @@ Console::~Console()
 
 }
 
-void Console::open(const char *prompt)
+void Console::open(const std::string &prompt)
 {
     m_prompt = fmt::format("{}> ", prompt);
     m_termination = false;
     m_future = std::async(std::launch::async, [this]()
     {
-        std::string path = fmt::format("{}/shell_history.txt", ProgramOptions::get_string("log_path"));
-        linenoise::SetMultiLine(false);
-        linenoise::SetHistoryMaxLen(50);
-        linenoise::LoadHistory(path.c_str());
-
         while (!m_termination)
         {
             std::string line;
 
-            if (linenoise::Readline(m_prompt.c_str(), line))
+            if (Readline::wait(m_prompt, line))
             {
                 break;
             }
@@ -54,6 +49,11 @@ void Console::open(const char *prompt)
             if (it != m_cmds.end())
             {
                 it->second(std::move(params));
+
+                if (cmd == "quit" || cmd == "exit")
+                {
+                    break;
+                }
             }
             else
             {
@@ -66,9 +66,6 @@ void Console::open(const char *prompt)
                     ERR("no find cmd. cmd = {}", line);
                 }
             }
-
-            linenoise::AddHistory(line.c_str());
-            linenoise::SaveHistory(path.c_str());
         }
     });
 }

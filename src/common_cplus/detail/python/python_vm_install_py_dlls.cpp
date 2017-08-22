@@ -330,7 +330,6 @@ bool install_py_dlls(void)
     {
         assert(g_funs[i]);
         assert(g_sfuns[i]);
-        DEBUG("Script::install_py_dlls(): {}", g_sfuns[i]);
         PyObject * m = my_import_lib(*g_funs[i]);
 
         if (!m)

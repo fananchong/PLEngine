@@ -57,10 +57,4 @@ private:
 #define ERR(...) do{ if (Logger::is_destroyed()) break; Logger::instance().log(e_logger_level_error, fmt::format(__VA_ARGS__)); }while(false);
 #define FATAL(...) do{ if (Logger::is_destroyed()) break; Logger::instance().log(e_logger_level_fatal, fmt::format(__VA_ARGS__)); }while(false);
 
-//show
-#define SHOW_WHITE(...) do{ if (Logger::is_destroyed()) break; Logger::instance().show(e_logger_level_debug, fmt::format(__VA_ARGS__)); }while(false);
-#define SHOW_GREEN(...) do{ if (Logger::is_destroyed()) break; Logger::instance().show(e_logger_level_info, fmt::format(__VA_ARGS__)); }while(false);
-#define SHOW_YELLOW(...) do{ if (Logger::is_destroyed()) break; Logger::instance().show(e_logger_level_warning, fmt::format(__VA_ARGS__)); }while(false);
-#define SHOW_RED(...) do{ if (Logger::is_destroyed()) break; Logger::instance().show(e_logger_level_error, fmt::format(__VA_ARGS__)); }while(false);
-
 #endif

@@ -18,7 +18,7 @@ public:
     Console();
     ~Console();
 
-    void open(const char *prompt);
+    void open(const std::string &prompt);
     void close();
     void register_cmd(const char *cmd, const ConsoleCmdType &handler);
     void register_default(const ConsoleDefaultType &handler);

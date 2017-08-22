@@ -8,11 +8,8 @@
 #include "run_container/run_container_main.h"
 #include "python_vm.h"
 #include "python/python_vm_impl.h"
+#include "console.h"
 
-#ifdef ENABLE_PLENGINE_PYTHON
-static const char *entrypoint = "PLMain";
-static bool g_pyvm_open = false;
-#endif
 
 int setup(
     const std::vector<std::string> &args,
@@ -20,7 +17,6 @@ int setup(
     const std::function<void()> &on_app_close,
     const std::vector<ProgramOptions::option_t> &options)
 {
-
     srand((unsigned)time(0));
 
     if (ProgramOptions::parse(args, options) == false)
@@ -35,6 +31,10 @@ int setup(
         return 0;
     }
 
+    void myexit(std::vector<std::string> &&);
+    Console::instance().register_cmd("quit", myexit);
+    Console::instance().register_cmd("exit", myexit);
+
     g_pmain = std::make_shared<RunContainerMain>();
 
     if (on_app_open)
@@ -48,20 +48,6 @@ int setup(
     {
         on_app_close();
     }
-
-#ifdef ENABLE_PLENGINE_PYTHON
-
-    if (g_pyvm_open)
-    {
-        g_pyvm_open = false;
-        PythonVM::get_impl()->post([]()
-        {
-            PythonVM::call(entrypoint, "on_app_close");
-        });
-        PythonVM::close();
-    }
-
-#endif
 
     return 0;
 }
@@ -87,8 +73,15 @@ int setup(
     return setup(args, on_app_open, on_app_close, options);
 }
 
+
+void myexit(std::vector<std::string> &&)
+{
+    g_pmain->stop();
+}
+
 #ifdef ENABLE_PLENGINE_PYTHON
-void setup_pythonvm(bool open_shell, const std::function<void()> &before_app_open)
+
+void open_pythonvm(bool open_shell, const std::function<void()> &on_vm_open)
 {
     PythonVM::open(
         ProgramOptions::get_string("py_home_path"),
@@ -97,27 +90,26 @@ void setup_pythonvm(bool open_shell, const std::function<void()> &before_app_ope
         g_argv
     );
 
-    PythonVM::get_impl()->post([before_app_open]()
+    if (on_vm_open)
     {
-        if (before_app_open)
+        PythonVM::get_impl()->post([on_vm_open]()
         {
-            before_app_open();
-        }
-
-        bool success = PythonVM::load_module(entrypoint);
-        assert(success);
-
-        if (success)
-        {
-            PythonVM::call(entrypoint, "on_app_open");
-
-            if (ProgramOptions::has("py_shell"))
-            {
-                PythonVM::open_shell();
-            }
-        }
-    });
+            on_vm_open();
+        });
+    }
 }
+
+void close_pythonvm(const std::function<void()> &on_vm_close)
+{
+    if (on_vm_close)
+    {
+        PythonVM::get_impl()->post([on_vm_close]()
+        {
+            on_vm_close();
+        });
+    }
+}
+
 #endif
 
 #endif

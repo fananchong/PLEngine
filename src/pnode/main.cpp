@@ -2,11 +2,9 @@
 #include <plengine/log.h>
 #include <plengine/program_options.h>
 #include <plengine/version.h>
+#include <plengine/python_vm.h>
 
-#pragma warning(push)
-#pragma warning(disable:4244)
-#include <boost/python.hpp>
-#pragma warning(pop)
+#include "pymain.h"
 
 static void show_copy_right(const std::string &appname)
 {
@@ -21,22 +19,25 @@ static void show_copy_right(const std::string &appname)
     INFO("");
 }
 
-typedef PyObject* (*pyfunc)(void);
-extern "C" PyObject* PyInit_pl(void);
-PyObject* my_import_lib(pyfunc func);
 static PyObject *g_module_pl = nullptr;
 static void install_pl()
 {
-    PyObject * m = my_import_lib(PyInit_pl);
+    g_module_pl = my_import_lib(PyInit_pl);
 
-    if (!m)
+    if (!g_module_pl)
     {
         ERR("install pl fail");
         assert(0);
         return ;
     }
 
-    g_module_pl = m;
+    PythonVM::exec(pymain);
+    PythonVM::exec("PLMain.on_app_open()");
+
+    if (ProgramOptions::has("py_shell"))
+    {
+        PythonVM::open_shell();
+    }
 }
 
 static void on_app_open()
@@ -50,11 +51,21 @@ static void on_app_open()
 #ifdef _DEBUG
     openshell = true;
 #endif
-    setup_pythonvm(openshell, install_pl);
+    open_pythonvm(openshell, install_pl);
 }
 
 static void on_app_close()
 {
+    close_pythonvm([]()
+    {
+        if (ProgramOptions::has("py_shell"))
+        {
+            PythonVM::close_shell();
+        }
+
+        PythonVM::exec("PLMain.on_app_close()");
+        PythonVM::close();
+    });
 }
 
 int main(int argc, char *argv[])

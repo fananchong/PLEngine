@@ -18,9 +18,7 @@ public:
     static void close();
     static void set_path(const std::string &path);
     static void print_path();
-    static bool load_module(const std::string &module);
     static void exec(const std::string &s);
-    static void call(const std::string &module, const std::string &func);
 
     static void open_shell();
     static void close_shell();

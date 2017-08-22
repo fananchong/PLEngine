@@ -24,18 +24,13 @@ public:
     void close();
     void set_path(const std::string &path);
     void print_path();
-    bool load_module(const std::string &module);
     void exec(const std::string &s);
-    void call(const std::string &module, const std::string &func);
 
     void open_shell();
     void close_shell();
 
 private:
     bool m_init;
-
-    using ModuleType = std::pair<std::shared_ptr<boost::python::object>, std::shared_ptr<boost::python::object>>;
-    std::unordered_map<std::string, PythonVMImpl::ModuleType> m_modules;
 };
 
 #endif

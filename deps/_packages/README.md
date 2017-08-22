@@ -18,7 +18,4 @@
 - Python-3.6.2.tgz
 
   https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz
-  
-- cpp-linenoise (d9c243f9f115ebfd7636b7ffa0f17c8e449847cb)
 
-  https://github.com/yhirose/cpp-linenoise.git

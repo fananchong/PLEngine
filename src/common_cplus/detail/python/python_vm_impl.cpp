@@ -4,7 +4,6 @@
 #include "python_vm_impl.h"
 #include "python_vm.h"
 #include "python_vm_install_py_dlls.h"
-#include "python_vm_print_error.h"
 #include "log.h"
 #include "strutil.h"
 #include "program_options.h"
@@ -120,17 +119,7 @@ void PythonVMImpl::close()
 {
     m_init = false;
 
-    if (ProgramOptions::has("py_shell"))
-    {
-        close_shell();
-    }
-
     RunContainer::stop();
-
-    if (Py_IsInitialized())
-    {
-        Py_Finalize();
-    }
 }
 
 void PythonVMImpl::set_path(const std::string &path)
@@ -142,36 +131,6 @@ void PythonVMImpl::print_path()
     exec("print sys.path");
 }
 
-bool PythonVMImpl::load_module(const std::string &module)
-{
-    try
-    {
-        if (m_modules.find(module) == m_modules.end())
-        {
-            auto mobj = PyImport_ImportModule(module.c_str());
-
-            if (mobj)
-            {
-                auto module_ = std::make_shared<boost::python::object>(boost::python::handle<>(mobj));
-                auto namespace_ = std::make_shared<boost::python::object>(module_->attr("__dict__"));
-                m_modules[module] = { module_, namespace_ };
-                return true;
-            }
-            else
-            {
-                pythonvm_print_error();
-            }
-        }
-    }
-    catch (...)
-    {
-        pythonvm_print_error();
-    }
-
-    ERR("failed to load py module, module = {}", module);
-    return false;
-}
-
 void PythonVMImpl::exec(const std::string &s)
 {
     try
@@ -180,29 +139,8 @@ void PythonVMImpl::exec(const std::string &s)
     }
     catch (...)
     {
-        pythonvm_print_error();
-    }
-}
-
-void PythonVMImpl::call(const std::string &module, const std::string &func)
-{
-    auto it = m_modules.find(module);
-
-    if (it != m_modules.end())
-    {
-        try
-        {
-            boost::python::call_method<void>(it->second.first->ptr(), func.c_str());
-        }
-        catch (...)
-        {
-            pythonvm_print_error();
-        }
-    }
-    else
-    {
-        ERR("no find module. module = {}", module);
-        assert(0);
+        PyErr_Print();
+        PyErr_Clear();
     }
 }
 
@@ -216,7 +154,7 @@ void PythonVMImpl::open_shell()
             PythonVM::exec(cmd);
         });
     });
-    Console::instance().open("python");
+    Console::instance().open(ProgramOptions::get_string("name"));
 }
 
 void PythonVMImpl::close_shell()

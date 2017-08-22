@@ -39,28 +39,12 @@ void PythonVM::print_path()
         m_impl->print_path();
     }
 }
-bool PythonVM::load_module(const std::string &module)
-{
-    if (m_impl)
-    {
-        return m_impl->load_module(module);
-    }
 
-    return false;
-}
 void PythonVM::exec(const std::string &s)
 {
     if (m_impl)
     {
         m_impl->exec(s);
-    }
-}
-
-void PythonVM::call(const std::string &module, const std::string &func)
-{
-    if (m_impl)
-    {
-        m_impl->call(module, func);
     }
 }
 
